@@ -1,12 +1,19 @@
 # README #
 
 Working on a set of tools for osu!  
- 
----
-   
+  
+---  
+  
+**Current Features**
+- Song Detection/Extraction
+- Song Path & Export Path choosing
+- Song Filtering
+- Exporting selected songs
+-> Adds selected songs to their own osu! folder Album w/ track #
+-> Edits id3 tags to add in Title/Artist
+  
 **WIP**  
-- Easy Interface  
-- Song Detection/Extraction  
+- Easy/Better Interface (?)    
 - Simple Duplicate Detection  
   
 **Planned**  
@@ -22,4 +29,4 @@ Working on a set of tools for osu!
   
 ***Unlikely Possibly Future Plans***  
 - Creation of Collections  
-- Easy Export and Import of replays  
+- Easy Export and Import of replays
