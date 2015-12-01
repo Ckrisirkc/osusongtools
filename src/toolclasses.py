@@ -19,6 +19,13 @@ class BMSong:
         self.artist = artist
     def setTitle(self, title):
         self.title = title
+    def addTags(self, tags):
+        for tag in tags:
+          self.tags.add(tag)
+    def clearTags(self):
+        self.tags = set()
+    def getTags(self):
+        return self.tags
     def getFileName(self):
         return self.fileName
     def getArtist(self):
@@ -26,9 +33,11 @@ class BMSong:
     def getTitle(self):
         return self.title
     def getSize(self):
-        return os.path.getsize(fileName)
+        return os.path.getsize(self.fileName)
     def search(self, keyword):
-        return (re.search(keyword, self.Title, re.IGNORECASE) or re.search(keyword, self.Artist, re.IGNORECASE))
+        return (re.search(keyword, self.title, re.IGNORECASE) or \
+          re.search(keyword, self.artist, re.IGNORECASE) or \
+          any([True for found in self.tags if re.search(keyword, found, re.IGNORECASE)]))
 
 class BMFolder:
     def __init__(self, folder):
@@ -42,6 +51,7 @@ class BMFolder:
                 self.getInfoFromFile(filep)
     def getInfoFromFile(self, file):
         reader = open(file, 'r')
+        tags = set()
         for line in reader:
             if line.startswith("AudioFilename"):
                 #print("Line: %s"  % line)
@@ -50,6 +60,9 @@ class BMFolder:
                 songTitle = line[line.index(":") + 1:].strip()
             if line.startswith("Artist:"):
                 songArtist = line[line.index(":") + 1:].strip()
+            if line.startswith("Tags:"):
+                for tag in line[line.index(":") + 1:].strip().split():
+                    tags.add(tag)
         if songPath is None:
             return
         song = BMSong(songPath)
@@ -72,7 +85,7 @@ class SongManager:
         self.songs = [individualsong for bmfolder in bmfolders for individualsong in list(bmfolder.getSongs()) if os.path.isfile(individualsong.getFileName())] # This makes my head hurt. Get a list of all songs from all BMFolders in bmfolders
         self.selected = list(self.songs)
     def filterSongs(self, keyword):
-        self.selected = [match for song in self.songs if song.search(keyword)]
+        self.selected = [song for song in self.songs if song.search(keyword)]
         # equivalent code below --
         #for song in self.songs:
         #    if song.search(keyword):
@@ -99,6 +112,7 @@ def userChoice(choices=None):
         print "Avilable Options: ",
         for x in choices:
             print x,
+        print ""
         usrin = raw_input("Enter Option: ").strip()
     return usrin
         
